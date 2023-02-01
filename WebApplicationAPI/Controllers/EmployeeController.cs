@@ -10,6 +10,7 @@ namespace WebApplicationAPI.Controllers
     {
         private static List<Employee> Employees = new List<Employee>
         {
+            //my test data
             new Employee
                 {
 
@@ -69,13 +70,14 @@ namespace WebApplicationAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Employee>>> Delete(int id)
         {
-        var emply = Employees.Find(Employee => Employee.Id == id);
-        if (emply == null)
+            var dbemp = await _context.Employees.FindAsync(id);
+        if (dbemp == null)
         {
             return BadRequest("Employee Not Found");
         }
-        Employees.Remove(emply);
-        return Ok(emply);
+        _context.Employees.Remove(dbemp);
+        await _context.SaveChangesAsync();
+        return Ok(await _context.Employees.ToListAsync());
         }
     }
 }
